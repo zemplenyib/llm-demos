@@ -1,5 +1,9 @@
 import os
+import sys
+# Add parent folder to sys.path so utils can be imported
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import argparse
+import utils
 from ingest import Ingest
 from chatbot import ChatBot
 
