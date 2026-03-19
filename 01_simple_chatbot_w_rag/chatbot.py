@@ -54,12 +54,7 @@ class ChatBot:
         if self._model is None:
             self.load_model()
 
-        if self._keyword_extraction:
-            # Remove filler words
-            keywords = self.extract_keywords(text)
-            keywords_list = [k[0] for k in keywords]
-            query_text = " ".join(keywords_list)
-
+        query_text = text
         if self._HyDE:
             # Apply HyDE (Hypotethical Document Embedding)
             prompt = (f"Write a one sentence answer to: {text}.")
@@ -70,7 +65,13 @@ class ChatBot:
                 }
             ])
             query_text = hypotethical_answer.message.content
-        
+
+        if self._keyword_extraction:
+            # Remove filler words
+            keywords = self.extract_keywords(text)
+            keywords_list = [k[0] for k in keywords]
+            query_text = " ".join(keywords_list)
+
         if self._query_expansion:
             prompt = (
                 f"Generate 10 related terms to: {text}."
