@@ -20,7 +20,7 @@ Projects are organized into subdirectories. Each subdirectory contains its own `
 ```
 llm-demos/
 ├── README.md
-└── <project-name>/
+└── 01_simple_chatbot_w_rag
     ├── README.md
     └── ...
 ```
