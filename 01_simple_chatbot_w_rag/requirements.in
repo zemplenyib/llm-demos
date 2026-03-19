@@ -1,0 +1,6 @@
+-r ../requirements.txt
+sentence-transformers
+ollama
+chromadb
+keybert
+pypdf
