@@ -30,4 +30,4 @@ llm-demos/
 Requirements vary by project. Common dependencies include:
 
 - Python 3.10+
-- API keys for relevant providers (e.g., `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`)
+- API keys for relevant providers. Set this in .env.
