@@ -14,19 +14,19 @@ class BatchImporter:
         # Requests per minute
         self.rpm = 100
         self.inserted_buffer = 0
-    
-    def insert_in_batch(self, collection, objs):
+
+    def _insert_in_batch(self, operation, collection, objs, label):
         i = 0
         while i < len(objs):
             batch_size = min(self.rpm - self.inserted_buffer, len(objs[i:]))
             batch = objs[i:i+batch_size]
-            response = collection.data.insert_many(batch)
+            response = operation(batch)
 
-            print(f"Insertion complete with {len(response.uuids)} objects for '{collection.name}' collection.")
+            print(f"Insertion complete with {len(response.uuids)} {label} for '{collection.name}' collection.")
             if len(response.errors) > 0:
-                print(f"Insertion errors: {response.errors}.")
+                for index, error in response.errors.items():
+                    print(f"Item {index} failed: {error.message}.")
 
-            # Increase inserted buffer by the inserted size
             self.inserted_buffer += batch_size
             if (self.inserted_buffer >= self.rpm):
                 print("Sleeping for 60s.")
@@ -34,6 +34,12 @@ class BatchImporter:
                 self.inserted_buffer = 0                
 
             i += batch_size
+
+    def insert_data_in_batch(self, collection, objs):
+        self._insert_in_batch(collection.data.insert_many, collection, objs, "objects")
+
+    def insert_ref_in_batch(self, collection, objs):
+        self._insert_in_batch(collection.data.reference_add_many, collection, objs, "references")
 
 
 def connect_to_my_db() -> WeaviateClient:
