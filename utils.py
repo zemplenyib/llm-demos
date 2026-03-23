@@ -2,12 +2,40 @@ import weaviate
 from weaviate.client import WeaviateClient
 import os
 from dotenv import load_dotenv
+import time
 
 # Load environment variables
 # From the provided `.env` file
 load_dotenv()
 
-  
+
+class BatchImporter:
+    def __init__(self, rpm=100):
+        # Requests per minute
+        self.rpm = 100
+        self.inserted_buffer = 0
+    
+    def insert_in_batch(self, collection, objs):
+        i = 0
+        while i < len(objs):
+            batch_size = min(self.rpm - self.inserted_buffer, len(objs[i:]))
+            batch = objs[i:i+batch_size]
+            response = collection.data.insert_many(batch)
+
+            print(f"Insertion complete with {len(response.uuids)} objects for '{collection.name}' collection.")
+            if len(response.errors) > 0:
+                print(f"Insertion errors: {response.errors}.")
+
+            # Increase inserted buffer by the inserted size
+            self.inserted_buffer += batch_size
+            if (self.inserted_buffer >= self.rpm):
+                print("Sleeping for 60s.")
+                time.sleep(60)
+                self.inserted_buffer = 0                
+
+            i += batch_size
+
+
 def connect_to_my_db() -> WeaviateClient:
     """
     Helper function to connect to your own Weaviate Cloud instance
@@ -58,11 +86,6 @@ def main():
     try:
         # Check whether the client is ready
         assert client.is_ready()  # Check connection status (i.e. is the Weaviate server ready)
-
-        # Try a query
-        movies = client.collections.get("Movie")
-        response = movies.query.near_text(query="time travel", limit=1)
-        assert len(response.objects) == 1
         print("Success! You appear to be correctly set up.")
     finally:
         # Close the connection

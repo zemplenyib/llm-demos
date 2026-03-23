@@ -25,6 +25,21 @@ llm-demos/
     └── ...
 ```
 
+## Setup
+
+After cloning the repo, run the following once from the root to make shared utilities importable across all subprojects:
+
+```bash
+pip install -e .
+```
+
+Then install dependencies for the specific subproject you want to run:
+
+```bash
+cd <subproject-folder>
+pip install -r requirements.txt
+```
+
 ## Prerequisites
 
 Requirements vary by project. Common dependencies include:
