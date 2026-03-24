@@ -1,4 +1,4 @@
-# 01 - Simple Chatbot with RAG
+# 01 - Local RAG Pipeline
 
 ## Aim
 

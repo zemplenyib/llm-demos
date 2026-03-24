@@ -20,7 +20,10 @@ Projects are organized into subdirectories. Each subdirectory contains its own `
 ```
 llm-demos/
 ├── README.md
-└── 01_simple_chatbot_w_rag
+├── 01-local-rag-pipeline
+│   ├── README.md
+│   └── ...
+└── 02-weaviate-fundamentals
     ├── README.md
     └── ...
 ```
